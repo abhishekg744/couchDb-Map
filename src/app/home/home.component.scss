@@ -1,0 +1,11 @@
+.main-container {
+    height: 100%;
+    width: 100%;
+    .sub-container {
+        height: 50%;
+        width: 100%;
+        align-items: center;
+        place-content: center;
+        border: 1px solid burlywood;
+    }
+}
