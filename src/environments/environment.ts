@@ -3,7 +3,10 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  mapToken:'pk.eyJ1IjoiYWJoaXNoZWtnNzQ0IiwiYSI6ImNrYzRtZHRxczA5Y2wzM21nYm5ycHB4ZTAifQ.R0KrLc5lezO5Q5kK5VJZwg',
+  syncGatewayURL: "http://localhost:4984/bucket1",
+  bucketName: 'bucket1'
 };
 
 /*

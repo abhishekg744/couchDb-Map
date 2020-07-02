@@ -8,6 +8,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import {MatExpansionModule} from '@angular/material/expansion';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
@@ -32,6 +33,7 @@ import { PouchDBService } from './pouchDb.service';
     MatCardModule,
     MatIconModule,
     MatButtonModule,
+    MatExpansionModule,
   ],
   providers: [PouchDBService],
   bootstrap: [AppComponent]

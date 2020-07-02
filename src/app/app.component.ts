@@ -1,5 +1,6 @@
 import { Component} from '@angular/core';
 import { PouchDBService } from './pouchDb.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,7 @@ export class AppComponent {
 
   public ngOnInit() {
 
-    this.database.sync("http://localhost:4985/bucket1");
+    this.database.sync();
 
     this.database.getChangeListener().subscribe(data => {
       for (let i = 0; i < data.change.docs.length; i++) {      

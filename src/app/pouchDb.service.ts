@@ -1,5 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { environment } from 'src/environments/environment';
 var PouchDB = require("pouchdb").default;
 
 @Injectable()
@@ -12,7 +13,7 @@ export class PouchDBService {
 
     public constructor() {
         if (!this.isInstantiated) {
-            this.database = new PouchDB("bucket1");
+            this.database = new PouchDB(environment.bucketName);
             this.isInstantiated = true;
         }
     }
@@ -53,10 +54,10 @@ export class PouchDBService {
         });
     }
 
-    public sync(remote: string) {
-        let remoteDatabase = new PouchDB(remote);
+    public sync() {
+        let remoteDatabase = new PouchDB(environment.syncGatewayURL);
 
-        var rep = PouchDB.replicate('http://localhost:4984/bucket1', 'bucket1', {
+        var rep = PouchDB.replicate(environment.syncGatewayURL, environment.bucketName, {
             live: true,
             retry: true
         }).on('change', function (info) {
@@ -79,14 +80,6 @@ export class PouchDBService {
             console.log(err);
             // handle error
         });
-
-        // this.database.sync(remoteDatabase, {
-        //     live: true
-        // }).on('change', change => {
-        //     this.listener.emit(change);
-        // }).on('error', error => {
-        //     console.error(JSON.stringify(error));
-        // });
     }
 
     public getChangeListener() {
