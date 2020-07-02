@@ -10,6 +10,7 @@ export class PouchDBService {
     private database: any;
     private listener: EventEmitter<any> = new EventEmitter();
     public cblData = new BehaviorSubject([]);
+    changedData;
 
     public constructor() {
         if (!this.isInstantiated) {
@@ -57,28 +58,36 @@ export class PouchDBService {
     public sync() {
         let remoteDatabase = new PouchDB(environment.syncGatewayURL);
 
-        var rep = PouchDB.replicate(environment.syncGatewayURL, environment.bucketName, {
-            live: true,
-            retry: true
-        }).on('change', function (info) {
-            // handle change
-            console.log(info);
-            this.listener.emit(info);
-        }).on('paused', function (err) {
-            console.log(err);
-            // replication paused (e.g. replication up to date, user went offline)
-        }).on('active', function () {
-            console.log('active');
-            // replicate resumed (e.g. new changes replicating, user went back online)
-        }).on('denied', function (err) {
-            console.log(err);
-            // a document failed to replicate (e.g. due to permissions)
-        }).on('complete', function (info) {
-            console.log(info);
-            // handle complete
-        }).on('error', function (err) {
-            console.log(err);
-            // handle error
+        // var rep = PouchDB.replicate(environment.syncGatewayURL, environment.bucketName, {
+        //     live: true,
+        //     retry: true
+        // }).on('change', function (info) {
+        //     // handle change
+        //     console.log(info);
+        //     this.listener.emit(info);
+        // }).on('paused', function (err) {
+        //     console.log(err);
+        //     // replication paused (e.g. replication up to date, user went offline)
+        // }).on('active', function () {
+        //     console.log('active');
+        //     // replicate resumed (e.g. new changes replicating, user went back online)
+        // }).on('denied', function (err) {
+        //     console.log(err);
+        //     // a document failed to replicate (e.g. due to permissions)
+        // }).on('complete', function (info) {
+        //     console.log(info);
+        //     // handle complete
+        // }).on('error', function (err) {
+        //     console.log(err);
+        //     // handle error
+        // });
+
+        this.database.sync(remoteDatabase, {
+            live: true
+        }).on('change', change => {
+            this.listener.emit(change);
+        }).on('error', error => {
+            console.error(JSON.stringify(error));
         });
     }
 

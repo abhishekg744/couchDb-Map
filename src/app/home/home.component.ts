@@ -28,7 +28,7 @@ export class HomeComponent implements OnInit {
         center: [this.lng, this.lat]
     });
     // Add map controls
-    this.map.addControl(new mapboxgl.NavigationControl());
+    //this.map.addControl(new mapboxgl.NavigationControl());
     
     this.database.cblData.subscribe(data => {
       this.cblData = data;      

@@ -38,7 +38,14 @@ export class AppComponent {
 
   updateToCBL(doc) {
     if(doc.assetId !== undefined && doc.assetId !== '' ) {
-      this.cblData.push(doc);
+      var data:any = this.cblData.findIndex(data => data._id === doc._id);
+      if(data !== -1) {
+        this.cblData[data] = doc;
+      } else {
+        this.cblData.push(doc);
+      }
+      
+      this.database.cblData.next(this.cblData);
     }
   }
 
