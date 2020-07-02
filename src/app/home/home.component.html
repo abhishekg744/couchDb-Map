@@ -1,16 +1,16 @@
 <div fxLayout="column" class="main-container">
     <div class="sub-container list-container" fxLayoutGap="10px">
         <div class="list-container" fxLayout="column">
-            <div fxLayout="row" class="row-data" fxFlexAlign="start" fxFlexFill fxLayoutGap="10px">
-                <div fxLayout="column" fxFlex="15" fxLayoutAlign="center"> <strong>From Location</strong></div>
-                <div fxLayout="column" fxFlex="15" fxLayoutAlign="center"> <strong>To Location </strong></div>
-                <div fxLayout="column" fxFlex="10" fxLayoutAlign="center">
+            <div fxLayout="row" class="row-data" fxFlexAlign="start" fxFlexFill fxLayoutGap="10px" fxLayoutGap.xs="5px">
+                <div fxLayout="column" fxFlex="15" fxFlex.md="25" fxFlex.xs="30" fxLayoutAlign="center"> <strong>From Location</strong></div>
+                <div fxLayout="column" fxFlex="15" fxFlex.md="25" fxFlex.xs="30" fxLayoutAlign="center"> <strong>To Location </strong></div>
+                <div fxLayout="column" fxFlex="10" fxFlex.md="20" fxFlex.xs="20" fxLayoutAlign="center">
                 </div>
             </div>
             <div fxLayout="row" class="row-data" fxFlexAlign="start" fxFlexFill fxLayoutGap="10px" *ngFor="let data of cblData">
-                <div fxLayout="column" fxFlex="15" fxLayoutAlign="center"> {{data.fromLocation.location}}</div>
-                <div fxLayout="column" fxFlex="15" fxLayoutAlign="center"> {{data.toLocation.location}}</div>
-                <div fxLayout="column" fxFlex="10" fxLayoutAlign="center"><button mat-raised-button color="primary">Load</button>
+                <div fxLayout="column" fxFlex="15" fxFlex.md="25" fxFlex.xs="30" fxLayoutAlign="center"> {{data.fromLocation.location}}</div>
+                <div fxLayout="column" fxFlex="15" fxFlex.md="25" fxFlex.xs="30" fxLayoutAlign="center"> {{data.toLocation.location}}</div>
+                <div fxLayout="column" fxFlex="10" fxFlex.md="20" fxFlex.xs="20" fxLayoutAlign="center"><button mat-raised-button color="primary">Load</button>
                 </div>
             </div>
         </div>
