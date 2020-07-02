@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { PouchDBService } from '../pouchDb.service';
 
 @Component({
   selector: 'app-home',
@@ -7,9 +8,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+  cblData = [];
+  public constructor(private database: PouchDBService) {
+  }
 
   ngOnInit() {
+    this.database.cblData.subscribe(data => {
+      this.cblData = data;      
+    })
   }
 
 }

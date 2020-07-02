@@ -2,10 +2,19 @@
     height: 100%;
     width: 100%;
     .sub-container {
-        height: 50%;
-        width: 100%;
-        align-items: center;
-        place-content: center;
+      height: 50%;
+      width: 100%;
         border: 1px solid burlywood;
+        padding: 10px;
+
+        .row-data {
+            height: 60px !important;
+            border-bottom: solid 1px grey;
+        }
+        
+    }
+
+    .list-container {
+        overflow: auto;
     }
 }

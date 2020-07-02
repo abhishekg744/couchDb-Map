@@ -1,8 +1,21 @@
 <div fxLayout="column" class="main-container">
-    <div fxLayout="column"  class="sub-container">
-        div 1
+    <div class="sub-container list-container" fxLayoutGap="10px">
+        <div class="list-container" fxLayout="column">
+            <div fxLayout="row" class="row-data" fxFlexAlign="start" fxFlexFill fxLayoutGap="10px">
+                <div fxLayout="column" fxFlex="15" fxLayoutAlign="center"> <strong>From Location</strong></div>
+                <div fxLayout="column" fxFlex="15" fxLayoutAlign="center"> <strong>To Location </strong></div>
+                <div fxLayout="column" fxFlex="10" fxLayoutAlign="center">
+                </div>
+            </div>
+            <div fxLayout="row" class="row-data" fxFlexAlign="start" fxFlexFill fxLayoutGap="10px" *ngFor="let data of cblData">
+                <div fxLayout="column" fxFlex="15" fxLayoutAlign="center"> {{data.fromLocation.location}}</div>
+                <div fxLayout="column" fxFlex="15" fxLayoutAlign="center"> {{data.toLocation.location}}</div>
+                <div fxLayout="column" fxFlex="10" fxLayoutAlign="center"><button mat-raised-button color="primary">Load</button>
+                </div>
+            </div>
+        </div>
     </div>
-    <div fxLayout="column"  class="sub-container">
+    <div class="sub-container">
         div 2
     </div>
 </div>
