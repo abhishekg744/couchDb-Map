@@ -11,3 +11,22 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
 //   .mapboxgl-ctrl button.mapboxgl-ctrl-zoom-in .mapboxgl-ctrl-icon{
 //     background-image: url('../img/svg/mapboxgl-ctrl-zoom-in.svg')
 //   }
+
+::-webkit-scrollbar {
+    width: 3px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: white; 
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: cadetblue; 
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: cadetblue; 
+  }

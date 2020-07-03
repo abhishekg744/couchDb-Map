@@ -1,5 +1,5 @@
 import { Component} from '@angular/core';
-import { PouchDBService } from './pouchDb.service';
+import { PouchDBService } from '../service/pouchDb-service/pouchDb.service';
 import { environment } from 'src/environments/environment';
 
 @Component({

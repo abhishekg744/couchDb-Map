@@ -1,36 +1,53 @@
 <div fxLayout="column" class="main-container">
     <div fxLayoutGap="10px">
-        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+        <mat-expansion-panel [expanded]="panelOpenState" (opened)="panelOpenState = true" [disabled]="selectedLocation.length != 0"
+            (closed)="closePanel()">
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                   Select Location
+                    <span *ngIf="!fromLocation.length">Select Location</span>
+                    <div *ngIf="fromLocation.length" fxLayout="row" fxFlexFill fxLayoutGap="10px">
+                        <div fxFlex="50" fxFlexAlign="center" class="selected-data-title">From: <span class="selected-data">{{fromLocation}}</span></div>
+                        <div fxFlex="50" fxFlexAlign="center" class="selected-data-title">To: <span class="selected-data">{{toLocation}}</span></div>
+                    </div>
                 </mat-panel-title>
-                <mat-panel-description>
-                   <!-- title -->
+                <mat-panel-description fxHide.lt-sm>
+                    <div fxLayout="row" *ngIf="fromLocation.length" fxLayoutGap="10px" fxFlexFill fxLayoutAlign="end">  
+                        <button mat-raised-button color="primary">Accept</button>
+                        <button mat-raised-button color="warn" (click)="report()">Report</button>
+                    </div>
                 </mat-panel-description>
             </mat-expansion-panel-header>
-            <div class="list-container" fxLayout="column">
-                <div fxLayout="row" class="row-data" fxFlexAlign="start" fxFlexFill fxLayoutGap="10px" fxLayoutGap.xs="5px">
-                    <div fxLayout="column" fxFlex="15" fxFlex.md="25" fxFlex.lt-md="30" fxLayoutAlign="center"> <strong>From
+            <div fxLayout="column">
+                <div fxLayout="row" class="row-data" fxFlexAlign="start" fxFlexFill fxLayoutGap="10px"
+                    fxLayoutGap.xs="5px">
+                    <div fxLayout="column" fxFlex="15" fxFlex.md="25" fxFlex.lt-md="30" fxLayoutAlign="center">
+                        <strong>From
                             Location</strong></div>
-                    <div fxLayout="column" fxFlex="15" fxFlex.md="25" fxFlex.lt-md="30" fxLayoutAlign="center"> <strong>To
+                    <div fxLayout="column" fxFlex="15" fxFlex.md="25" fxFlex.lt-md="30" fxLayoutAlign="center">
+                        <strong>To
                             Location </strong></div>
                     <div fxLayout="column" fxFlex="10" fxFlex.md="20" fxFlex.lt-md="20" fxLayoutAlign="center">
                     </div>
                 </div>
-                <div fxLayout="row" class="row-data" fxFlexAlign="start" fxFlexFill fxLayoutGap="10px"
-                    *ngFor="let data of cblData">
-                    <div fxLayout="column" fxFlex="15" fxFlex.md="25" fxFlex.lt-md="30" fxLayoutAlign="center">
-                        {{data.fromLocation.location}}</div>
-                    <div fxLayout="column" fxFlex="15" fxFlex.md="25" fxFlex.lt-md="30" fxLayoutAlign="center">
-                        {{data.toLocation.location}}</div>
-                    <div fxLayout="column" fxFlex="10" fxFlex.md="20" fxFlex.lt-md="20" fxLayoutAlign="center"><button
-                            mat-raised-button color="primary">Load</button>
+                <div class="list-container">
+                    <div fxLayout="row" class="row-data" fxFlexAlign="start" fxFlexFill fxLayoutGap="10px"
+                        *ngFor="let data of cblData">
+                        <div fxLayout="column" fxFlex="15" fxFlex.md="25" fxFlex.lt-md="30" fxLayoutAlign="center">
+                            {{data.fromLocation.location}}</div>
+                        <div fxLayout="column" fxFlex="15" fxFlex.md="25" fxFlex.lt-md="30" fxLayoutAlign="center">
+                            {{data.toLocation.location}}</div>
+                        <div fxLayout="column" fxFlex="10" fxFlex.md="20" fxFlex.lt-md="20" fxLayoutAlign="center">
+                            <button mat-raised-button color="primary" (click)="load(data)">Load</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </mat-expansion-panel>
-        
-    </div>   
+
+    </div>
     <div class="map" id="map" class="match-parent"></div>
+    <div fxLayout="row" *ngIf="fromLocation.length" fxHide.sm fxHide.gt-sm class="map-btns" fxLayoutGap="10px" fxLayoutAlign="end">  
+        <button mat-raised-button color="primary">Accept</button>
+        <button mat-raised-button color="warn" (click)="report()">Report</button>
+    </div>
 </div>
