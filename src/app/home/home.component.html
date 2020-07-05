@@ -12,12 +12,12 @@
                 </mat-panel-title>
                 <mat-panel-description fxHide.lt-sm>
                     <div fxLayout="row" *ngIf="fromLocation.length" fxLayoutGap="10px" fxFlexFill fxLayoutAlign="end">  
-                        <button mat-raised-button color="primary">Accept</button>
+                        <button mat-raised-button class="accept">Accept</button>
                         <button mat-raised-button color="warn" (click)="report()">Report</button>
                     </div>
                 </mat-panel-description>
             </mat-expansion-panel-header>
-            <div fxLayout="column">
+            <mat-card fxLayout="column">
                 <div fxLayout="row" class="row-data" fxFlexAlign="start" fxFlexFill fxLayoutGap="10px"
                     fxLayoutGap.xs="5px">
                     <div fxLayout="column" fxFlex="15" fxFlex.md="25" fxFlex.lt-md="30" fxLayoutAlign="center">
@@ -41,13 +41,13 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </mat-card>
         </mat-expansion-panel>
 
     </div>
     <div class="map" id="map" class="match-parent"></div>
     <div fxLayout="row" *ngIf="fromLocation.length" fxHide.sm fxHide.gt-sm class="map-btns" fxLayoutGap="10px" fxLayoutAlign="end">  
-        <button mat-raised-button color="primary">Accept</button>
+        <button mat-raised-button class="accept">Accept</button>
         <button mat-raised-button color="warn" (click)="report()">Report</button>
     </div>
 </div>
