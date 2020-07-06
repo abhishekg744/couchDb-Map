@@ -49,6 +49,7 @@ export class HomeComponent implements OnInit {
   loadMap(coords) {
     this.map = this.mapService.getMapObject(coords.longitude, coords.latitude);
 
+    
     // this.map = this.mapService.setMarker(77.572729, 12.977481);  
     // let bounds:any[] = [];
     // bounds.push([position.coords.longitude, position.coords.latitude]);

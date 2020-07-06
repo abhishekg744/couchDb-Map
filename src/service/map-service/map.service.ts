@@ -24,6 +24,49 @@ export class MapService {
         zoom: 13,
         center: [longitude, latitude]
       });
+
+      this.map.on('load', () => {
+        this.map.addSource('Blr-source', {
+             type: 'vector',
+             url: 'mapbox://rohith17.sampleTileset_1593775707'
+        });
+
+        this.map.addLayer({
+            'id': 'blr-boundary',
+            'type': 'fill',
+            'source': 'Blr-source',
+            'source-layer': 'sourceTileset',
+            'paint': {
+                'fill-color': '#888888',
+                'fill-opacity': 0.4
+            },
+            'filter': ['==', '$type', 'Polygon']
+        });
+        this.map.addLayer({
+          'id': 'blr-points',
+          'type': 'symbol',
+          'source': 'Blr-source',
+          'source-layer': 'sourceTileset',
+          'layout': {
+              'text-field': ["get","name"],
+              'text-font': [
+              'Open Sans Bold',
+              'Arial Unicode MS Bold'
+              ],
+              'text-size': 11,
+              'text-transform': 'uppercase',
+              'text-letter-spacing': 0.05,
+              'text-offset': [0, 1.5]
+              },
+              'paint': {
+              'text-color': '#202',
+              'text-halo-color': '#fff',
+              'text-halo-width': 1
+              },
+               'filter': ['==', '$type', 'Point']
+          });
+      });  
+    
       // Add map controls
       // this.map.addControl(new mapboxgl.NavigationControl());
       this.map = this.setMarker(longitude, latitude);
