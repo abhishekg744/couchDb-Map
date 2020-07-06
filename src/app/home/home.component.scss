@@ -6,6 +6,14 @@
         border-bottom: solid 1px grey;
     }
 
+    mat-expansion-panel {
+        background-color:#668eb3;
+    }
+
+    mat-panel-title, mat-panel-description {
+        color: white;
+    }
+
     .list-container {
         overflow: auto;
         max-height: 180px !important;
@@ -21,7 +29,7 @@
     }
 
     .selected-data-title {
-        color: black !important;
+        color: white !important;
         font-weight: 500;
     }
 
@@ -33,5 +41,10 @@
 
     button {
         margin: 6px;
+    }
+
+    .accept {
+        background-color: limegreen;
+        color: white;
     }
 }
