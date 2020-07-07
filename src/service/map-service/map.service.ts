@@ -21,7 +21,7 @@ export class MapService {
       this.map = new mapboxgl.Map({
         container: 'map',
         style: this.style,
-        zoom: 13,
+        zoom: 11,
         center: [longitude, latitude]
       });
 

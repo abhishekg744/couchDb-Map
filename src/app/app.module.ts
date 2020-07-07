@@ -14,13 +14,15 @@ import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { PouchDBService } from '../service/pouchDb-service/pouchDb.service';
-
+import { GoogleMapComponent } from './google-map/google-map.component';
+import { NguiMapModule} from '@ngui/map';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     LoginComponent,
+    GoogleMapComponent,
   ],
   imports: [
     BrowserModule,
@@ -34,6 +36,7 @@ import { PouchDBService } from '../service/pouchDb-service/pouchDb.service';
     MatIconModule,
     MatButtonModule,
     MatExpansionModule,
+    NguiMapModule.forRoot({apiUrl: 'https://maps.google.com/maps/api/js?libraries=visualization,places,drawing'})
   ],
   providers: [PouchDBService],
   bootstrap: [AppComponent]
