@@ -29,9 +29,9 @@ export class FenceListComponent implements OnInit {
       this.selectedFence = event.source.value;
       // get call by name
       this.mapServiceService.getFenceDataByName(this.selectedFence).subscribe(res => {
-        this.tableData = res[0].coords;    
+        this.tableData = res[0];    
       });
-      this.tableData = { 'name': '1', 'coords': "12.954612386058743,77.638535;12.954421568269561,77.63922432771683;12.953770695532927,77.63901511541367;12.953922304595407,77.63839552513123;"};
+      // this.tableData = { 'name': '1', 'coords': "12.954612386058743,77.638535;12.954421568269561,77.63922432771683;12.953770695532927,77.63901511541367;12.953922304595407,77.63839552513123;"};
     }
   }
 
@@ -41,7 +41,11 @@ export class FenceListComponent implements OnInit {
  
 
   addNewFence() {
-
+    this.mapServiceService.addFenceData(this.newRecord).subscribe((res:any) => {
+      this.fenceData.splice(0,0,res.name);
+      console.log("Record added");
+      this.isAddFence = false;
+    });
   }
 
 }

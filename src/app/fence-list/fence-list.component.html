@@ -70,7 +70,7 @@ Choose fence to add on map
                     </mat-form-field>
                 </span>
             </div>
-            <button [disabled]="newRecord.name.length != 0 && newRecord.coords.length != 0" mat-raised-button color="primary"
+            <button [disabled]="!((newRecord.name.length !== 0) && (newRecord.coords.length !== 0))" mat-raised-button color="primary"
                 (click)="addNewFence()">
                 ADD</button>
         </div>

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { isPointInPolygon } from 'geolib';
+import { MapServiceService } from '../services/map-service.service';
 
 @Component({
   selector: 'app-google-map',
@@ -8,7 +9,7 @@ import { isPointInPolygon } from 'geolib';
 })
 export class GoogleMapComponent implements OnInit {
 
-  constructor() { }
+  constructor(private mapServiceService: MapServiceService) { }
 
   polys = [
     JSON.stringify({ 'name': 1, 'coords': [{ latlang: '12.954615167713982,77.63853529426154' }, { latlang: '12.954442647529259,77.63924071523246' }, { latlang: '12.95424660171983,77.63919779988822' }, { latlang: '12.954419122040278,77.63849640223083' },] }),
@@ -60,6 +61,12 @@ export class GoogleMapComponent implements OnInit {
   }
   private map: google.maps.Map;
   ngOnInit(): void {
+    this.mapServiceService.getAllFenceDataName().subscribe((res : any) => {
+     this.fenceData = res; 
+     this.fenceData.push('Add new fence'); 
+    },err => {
+      console.log("Error Response",err);
+    });
 
     //this.convertToTableViewFormate(this.polys);
     console.log('check', isPointInPolygon({ lat: 12.954323775550376, lng: 77.63915473532667 }, this.area4Coords));
