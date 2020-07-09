@@ -9,96 +9,93 @@ import { isPointInPolygon } from 'geolib';
 export class GoogleMapComponent implements OnInit {
 
   constructor() { }
+
+  polys = [
+    JSON.stringify({ 'name': 1, 'coords': [{ latlang: '12.954615167713982,77.63853529426154' }, { latlang: '12.954442647529259,77.63924071523246' }, { latlang: '12.95424660171983,77.63919779988822' }, { latlang: '12.954419122040278,77.63849640223083' },] }),
+    JSON.stringify({ 'name': 2, 'coords': [{ latlang: '12.95441650809697,77.63849477130759' }, { latlang: '12.954330247950807,77.63881395418036' }, { latlang: '12.954027030230158,77.63874421674598' }, { latlang: '12.954104141668257,77.63842235166419' },] }),
+  ];
+  tableData = [];
+
+  fenceData = ['fence1', 'fence2', 'Add new fence'];
+
+  latlng1; latlng2; latlng3; latlng4;
+
   area1Coords = [
-    { lat: 12.954106603821828, lng: 77.63842666333177 },
-    { lat: 12.95395760881971, lng: 77.63905430024126 },
-    { lat: 12.953772018429293, lng: 77.63900602047899 },
-    { lat: 12.953909250773563, lng: 77.63838508909204 },
+    { lat: 12.954615167713982, lng: 77.63853529426154 },
+    { lat: 12.954442647529259, lng: 77.63924071523246 },
+    { lat: 12.95424660171983, lng: 77.63919779988822 },
+    { lat: 12.954419122040278, lng: 77.63849640223083 },
   ];
 
   area2Coords = [
-    { lat: 12.954182408262366, lng: 77.63909185116746 },
-    { lat: 12.954242529009168, lng: 77.63890543764093 },
-    { lat: 12.954303956713737, lng: 77.63892220144727 },
-    { lat: 12.954331403130036, lng: 77.63882631247499 },
-    { lat: 12.954031452845054, lng: 77.63875590448835 },
-    { lat: 12.95395630184562, lng: 77.63905564134576 },
+    { lat: 12.95441650809697, lng: 77.63849477130759 },
+    { lat: 12.954330247950807, lng: 77.63881395418036 },
+    { lat: 12.954027030230158, lng: 77.63874421674598 },
+    { lat: 12.954104141668257, lng: 77.63842235166419 },
   ];
 
   area3Coords = [
-    { lat: 12.954335322601548, lng: 77.63848298972108 },
-    { lat: 12.95410790935029, lng: 77.6384320277498 },
-    { lat: 12.954029490939643, lng: 77.6387565750406 },
-    { lat: 12.954331401685184, lng: 77.63882631247499 },
-    { lat: 12.95434283769111, lng: 77.63873377626398 },
-    { lat: 12.954281083252992, lng: 77.63872707074144 },
-
+    { lat: 12.954332861895066, lng: 77.63882736522544 },
+    { lat: 12.95401657444008, lng: 77.63875494558204 },
+    { lat: 12.953952532716421, lng: 77.63909424502242 },
+    { lat: 12.954257057500277, lng: 77.6391626413523 },
   ];
   area4Coords = [
-    { lat: 12.954614491155372, lng: 77.6385297806262 },
-    { lat: 12.954338720196253, lng: 77.63848418307295 },
-    { lat: 12.954281952437343, lng: 77.6387269229888 },
-    { lat: 12.954342215148218, lng: 77.63873463433971 },
-    { lat: 12.95430699789374, lng: 77.63892088022818 },
-    { lat: 12.954242973993296, lng: 77.6389074272736 },
-    { lat: 12.954178287715624, lng: 77.63912734745806 },
-    { lat: 12.954184455548749, lng: 77.63914796563019 },
-    { lat: 12.954218069810473, lng: 77.63915785496626 },
-    { lat: 12.954225177583877, lng: 77.63916958701135 },
-    { lat: 12.954252462855832, lng: 77.63917695784745 },
-    { lat: 12.954249526604682, lng: 77.63920242835572 },
-    { lat: 12.954445607908808, lng: 77.6392398954629 },
+    { lat: 12.954100220748229, lng: 77.63841162282813 },
+    { lat: 12.953951225742294, lng: 77.63906876403678 },
+    { lat: 12.95377347719768, lng: 77.63902584869254 },
+    { lat: 12.953915937438358, lng: 77.63837675411094 },
   ];
-
+  coords = [[]];
   positions = [
     [12.954036238178764, 77.6394912253171],
     [12.954051921862435, 77.63929810626803],
     [12.954041466073427, 77.63917472465334]
   ]
   i = -0;
-  position:any = this.positions[this.i];
+  position: any = this.positions[this.i];
   options = {
     position: this.position,
   }
   ngOnInit(): void {
+    //this.convertToTableViewFormate(this.polys);
     console.log('check', isPointInPolygon({ lat: 12.954323775550376, lng: 77.63915473532667 }, this.area4Coords));
     setInterval(() =>
       this.setPosition(), 5000
     );
   }
+
+  
+
   setPosition() {
     this.i++;
     if (this.i <= this.positions.length - 1) {
       var pos = this.positions[this.i];
-      this.position = {'lat': pos[0], 'lng': pos[1]};
+      this.position = { 'lat': pos[0], 'lng': pos[1] };
       console.log('done', this.position);
-      
+
     }
   }
 
-  check(lat, lng) {
-    var j = 0;
-    var oddNodes = false;
-    var x = lng;
-    var y = lat;
-    for (var i = 0; i < this.area1Coords.length; i++) {
-      j++;
-      if (j == this.area1Coords.length) { j = 0; }
-      if (((this.area1Coords[i].lat < y) &&
-        (this.area1Coords[j].lat >= y))
-        || ((this.area1Coords[j].lat < y) &&
-          (this.area1Coords[i].lat >= y))) {
-        if (this.area1Coords[i].lng + (y -
-          this.area1Coords[i].lat)
-          / (this.area1Coords[j].lat -
-            this.area1Coords[i].lat)
-          * (this.area1Coords[j].lng -
-            this.area1Coords[i].lng) < x) {
-          oddNodes = !oddNodes
-        }
-      }
+  selectedFenceData(data) {
+    console.log(data);
+    this.convertToMapPolygons(data.coords);
+    // {name: "1", coords: "12.954615167713982,77.63853529426154;12.9544426475…02584869254;12.953915937438358,77.63837675411094;"}
+    // this.coords = [this.area1Coords, this.area2Coords, this.area3Coords, this.area4Coords];
+  }
+
+  convertToMapPolygons(latLngValues) {
+    if(latLngValues[latLngValues.length-1] == ';'){
+      latLngValues = latLngValues.substring(0, latLngValues.length -1);
     }
-    return oddNodes;
+    let eachValue = latLngValues.split(';');
+    let data= eachValue.map(value => {
+      value = value.split(',');
+      let modifiedValue = {lat:parseFloat(value[0]), lng: parseFloat(value[1])};
+      value = modifiedValue;
+      return value;
+    });
+    console.log('modified ', data );
   }
 
 }

@@ -15,25 +15,25 @@ export class AppComponent {
 
   public ngOnInit() {
 
-    this.database.sync();
+    // this.database.sync();
 
-    this.database.getChangeListener().subscribe(data => {
-      for (let i = 0; i < data.change.docs.length; i++) {      
-          this.updateToCBL(data.change.docs[i]);
-      }
-      this.database.cblData.next(this.cblData);
-    });
+    // this.database.getChangeListener().subscribe(data => {
+    //   for (let i = 0; i < data.change.docs.length; i++) {      
+    //       this.updateToCBL(data.change.docs[i]);
+    //   }
+    //   this.database.cblData.next(this.cblData);
+    // });
 
-    this.database.fetch().then(result => {
-      this.cblData = [];
-      for (let i = 0; i < result.rows.length; i++) {
-        this.updateToCBL(result.rows[i].doc);
-      }
-      this.database.cblData.next(this.cblData);
-    }, error => {
-      console.error(error);
-    });
-    //this.database.deleteAllDocs();
+    // this.database.fetch().then(result => {
+    //   this.cblData = [];
+    //   for (let i = 0; i < result.rows.length; i++) {
+    //     this.updateToCBL(result.rows[i].doc);
+    //   }
+    //   this.database.cblData.next(this.cblData);
+    // }, error => {
+    //   console.error(error);
+    // });
+    
   }
 
   updateToCBL(doc) {
