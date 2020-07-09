@@ -3,7 +3,7 @@
         <!-- <app-add-coords [fenceData]="fenceData" (addFenceData)="addFenceData($event)"></app-add-coords> -->
         <app-fence-list [fenceData]="fenceData" (selectedFenceData)="selectedFenceData($event)" ></app-fence-list>
     </div>
-    <ngui-map zoom="20" center="12.954159356094474, 77.63884458874949" mapTypeId="satellite">
+    <ngui-map zoom="19" [center]="mapCenter" mapTypeId="satellite" (mapReady$)="onMapReady($event)">
         <polygon *ngFor="let polygon of coords" [editable]="true" [paths]="polygon" [strokeColor]="'#FFC107'" [strokeOpacity]="0.8"
             [strokeWeight]="2" [fillColor]="'#FFC107'" [fillOpacity]="0.35"></polygon>
 

@@ -19,6 +19,7 @@ import { GoogleMapComponent } from './google-map/google-map.component';
 import { NguiMapModule} from '@ngui/map';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FenceListComponent } from './fence-list/fence-list.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { FenceListComponent } from './fence-list/fence-list.component';
     MatButtonModule,
     MatExpansionModule,
     MatSelectModule,
+    HttpClientModule,
     NguiMapModule.forRoot({apiUrl: 'https://maps.google.com/maps/api/js?libraries=visualization,places,drawing'})
   ],
   providers: [PouchDBService],

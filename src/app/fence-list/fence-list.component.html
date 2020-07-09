@@ -28,7 +28,7 @@ Choose fence to add on map
                 <span class="material-icons delete-icon" fxFlexAlign="center">
                     delete
                 </span>
-                <span class="material-icons sync-icon" fxFlexAlign="center" *ngIf="!tableData.edit">
+                <span class="material-icons sync-icon" fxFlexAlign="center" (click)="loadOnMap()" *ngIf="!tableData.edit">
                     sync
                 </span>
             </div>
@@ -48,6 +48,7 @@ Choose fence to add on map
                 <span *ngIf="tableData.edit" class='coord-values'>
                     <mat-form-field appearance="fill" fxFlexFill>
                         <textarea matInput fxFlexAlign="center" [(ngModel)]="tableData.coords"></textarea>
+                        <mat-hint>Formate : lat1,lng1;lat2,lng2</mat-hint>
                     </mat-form-field>
                 </span>
             </div>
@@ -65,6 +66,7 @@ Choose fence to add on map
                 <span class='coord-values'>
                     <mat-form-field appearance="fill" fxFlexFill>
                         <textarea matInput fxFlexAlign="center" [(ngModel)]="newRecord.coords"></textarea>
+                        <mat-hint>Formate : lat1,lng1;lat2,lng2</mat-hint>
                     </mat-form-field>
                 </span>
             </div>

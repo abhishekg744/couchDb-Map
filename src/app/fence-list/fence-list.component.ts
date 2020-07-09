@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { MapServiceService } from '../services/map-service.service';
 
 @Component({
   selector: 'app-fence-list',
@@ -7,7 +8,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 })
 export class FenceListComponent implements OnInit {
 
-  constructor() { }
+  constructor(private mapServiceService: MapServiceService) { }
   @Input() fenceData;
   @Output() selectedFenceData = new EventEmitter();
   tableData: any = {};
@@ -27,11 +28,17 @@ export class FenceListComponent implements OnInit {
       this.isAddFence = false;
       this.selectedFence = event.source.value;
       // get call by name
-      this.tableData = { 'name': '1', 'coords': "12.954615167713982,77.63853529426154;12.954442647529259,77.63924071523246;12.95424660171983,77.63919779988822;12.954419122040278,77.63849640223083;12.95441650809697,77.63849477130759;12.954330247950807,77.63881395418036;12.954027030230158,77.63874421674598;12.954104141668257,77.63842235166419;12.954100220748229,77.63841162282813;12.953951225742294,77.63906876403678;12.95377347719768,77.63902584869254;12.953915937438358,77.63837675411094;"};
-      this.selectedFenceData.emit(this.tableData);
+      this.mapServiceService.getFenceDataByName(this.selectedFence).subscribe(res => {
+        this.tableData = res[0].coords;    
+      });
+      this.tableData = { 'name': '1', 'coords': "12.954612386058743,77.638535;12.954421568269561,77.63922432771683;12.953770695532927,77.63901511541367;12.953922304595407,77.63839552513123;"};
     }
-   
   }
+
+  loadOnMap() {
+    this.selectedFenceData.emit(this.tableData);
+  }
+ 
 
   addNewFence() {
 

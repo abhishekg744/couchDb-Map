@@ -19,6 +19,7 @@ export class GoogleMapComponent implements OnInit {
   fenceData = ['fence1', 'fence2', 'Add new fence'];
 
   latlng1; latlng2; latlng3; latlng4;
+  mapCenter = '12.954154945908408, 77.64081755987168';
 
   area1Coords = [
     { lat: 12.954615167713982, lng: 77.63853529426154 },
@@ -46,7 +47,7 @@ export class GoogleMapComponent implements OnInit {
     { lat: 12.95377347719768, lng: 77.63902584869254 },
     { lat: 12.953915937438358, lng: 77.63837675411094 },
   ];
-  coords = [[]];
+  coords = [];
   positions = [
     [12.954036238178764, 77.6394912253171],
     [12.954051921862435, 77.63929810626803],
@@ -57,7 +58,9 @@ export class GoogleMapComponent implements OnInit {
   options = {
     position: this.position,
   }
+  private map: google.maps.Map;
   ngOnInit(): void {
+
     //this.convertToTableViewFormate(this.polys);
     console.log('check', isPointInPolygon({ lat: 12.954323775550376, lng: 77.63915473532667 }, this.area4Coords));
     setInterval(() =>
@@ -65,7 +68,10 @@ export class GoogleMapComponent implements OnInit {
     );
   }
 
-  
+  onMapReady(map){
+    this.map = map;
+    console.log('map', map)
+  }
 
   setPosition() {
     this.i++;
@@ -79,9 +85,9 @@ export class GoogleMapComponent implements OnInit {
 
   selectedFenceData(data) {
     console.log(data);
-    this.convertToMapPolygons(data.coords);
+    let convertedData = this.convertToMapPolygons(data.coords);
     // {name: "1", coords: "12.954615167713982,77.63853529426154;12.9544426475…02584869254;12.953915937438358,77.63837675411094;"}
-    // this.coords = [this.area1Coords, this.area2Coords, this.area3Coords, this.area4Coords];
+    this.coords.push(convertedData);
   }
 
   convertToMapPolygons(latLngValues) {
@@ -89,13 +95,15 @@ export class GoogleMapComponent implements OnInit {
       latLngValues = latLngValues.substring(0, latLngValues.length -1);
     }
     let eachValue = latLngValues.split(';');
+    this.mapCenter = eachValue[0].split(',');
+    this.map.setCenter({lat:parseFloat(this.mapCenter[0]),lng:parseFloat(this.mapCenter[1])});    
     let data= eachValue.map(value => {
       value = value.split(',');
       let modifiedValue = {lat:parseFloat(value[0]), lng: parseFloat(value[1])};
       value = modifiedValue;
       return value;
-    });
-    console.log('modified ', data );
+    });   
+    return data;
   }
 
 }

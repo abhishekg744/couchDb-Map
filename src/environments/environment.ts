@@ -6,7 +6,8 @@ export const environment = {
   production: false,
   mapToken:'pk.eyJ1Ijoicm9oaXRoMTciLCJhIjoiY2tjMXZpaHplMG1qNDJybGY4NG00MW5xNiJ9.p2PZsJzou8b6DAjskvmolA',
   syncGatewayURL: "http://localhost:4984/bucket1",
-  bucketName: 'bucket1'
+  bucketName: 'bucket1',
+  serverUrl:'http://localhost:9091/api/v1/',
 };
 
 /*
