@@ -43,3 +43,29 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
   mat-panel-title, mat-panel-description {
       color: white !important;
   }
+
+  .add-cords mat-dialog-container {
+    padding: 0px !important;
+  }
+
+  .md-select-menu-container {
+    z-index: 99999 !important;
+  }
+
+  .mat-horizontal-stepper-header-container {
+    width: 350px;
+  }
+
+  .error-snackbar {
+    background-color: red;
+    color: white;
+    display: flex !important;
+    place-content: center;
+  }
+
+  .success-snackbar {
+    background-color: green;
+    color: white;
+    display: flex !important;
+    place-content: center;
+  }

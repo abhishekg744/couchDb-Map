@@ -1,102 +1,100 @@
 <mat-expansion-panel>
     <mat-expansion-panel-header>
         <mat-panel-title>
-            Fence List
+            Geo fence data
         </mat-panel-title>
         <mat-panel-description>
-Choose fence to add on map
+            View/Add fence
         </mat-panel-description>
     </mat-expansion-panel-header>
-    <mat-card fxLayout="column" class="list-container">
-        <div fxLayout="row wrap" fxLayoutGap="5px">
-            <mat-form-field appearance="fill" class="select-field">
-                <mat-label>Select Fence</mat-label>
-                <mat-select (selectionChange)="selectedFenceChanged($event)">
-                    <mat-option *ngFor="let fence of fenceData" [value]="fence">
-                        {{fence}}</mat-option>
-                </mat-select>
-            </mat-form-field>
-            <div fxLayout="row" *ngIf="selectedFence">
-                <span class="material-icons edit-icon" fxFlexAlign="center" *ngIf="!tableData.edit"
-                    (click)="tableData.edit = !tableData.edit">
-                    create
-                </span>
-                <span class="material-icons sync-icon" fxFlexAlign="center" *ngIf="tableData.edit"
-                    (click)="tableData.edit = !tableData.edit">
-                    check
-                </span>
-                <span class="material-icons delete-icon" fxFlexAlign="center">
-                    delete
-                </span>
-                <span class="material-icons sync-icon" fxFlexAlign="center" (click)="loadOnMap()" *ngIf="!tableData.edit">
-                    sync
-                </span>
-            </div>
-        </div>
-        <div fxLayout="column" *ngIf="selectedFence && !isAddFence" fxFlexAlign="start" fxLayoutGap="5px" fxFlexFill>
-            <div fxLayout="row">
-                <span *ngIf="!tableData.edit"><strong>Name : </strong> {{tableData.name}}</span>
-                <span *ngIf="tableData.edit"><strong>Name : </strong>
-                    <mat-form-field appearance="fill">
-                        <input matInput fxFlexAlign="center" [(ngModel)]="tableData.name">
+    <mat-horizontal-stepper #stepper>
+        <mat-step>
+            <ng-template matStepLabel>Fence List</ng-template>
+            <div fxLayout="column" class="list-container"  fxFlexOffset="10px">
+                <div fxLayout="row wrap" fxLayoutGap="5px">
+                    <mat-form-field appearance="fill" class="select-field">
+                        <mat-label>Select Fence</mat-label>
+                        <mat-select (selectionChange)="selectedFenceChanged($event)">
+                            <mat-option *ngFor="let fence of fenceData" [value]="fence">
+                                {{fence}}</mat-option>
+                        </mat-select>
                     </mat-form-field>
-                </span>
+                </div>
+                <div fxLayout="column" *ngIf="selectedFence" fxFlexAlign="start" fxLayoutGap="5px" fxFlexFill>
+                    <div *ngFor="let polygon of polygons; let tableindex = index;">
+                        <div fxLayout="column">
+                            <div fxLayout="row">
+                                <strong>Latituse Longitude Values</strong>
+                                <span class="material-icons edit-icon" fxFlexAlign="center" *ngIf="!polygon.edit"
+                                    (click)="polygon.edit = !polygon.edit">
+                                    create
+                                </span>
+                                <span class="material-icons sync-icon" fxFlexAlign="center" *ngIf="polygon.edit"
+                                    (click)="polygon.edit = !polygon.edit">
+                                    check
+                                </span>
+                                <span class="material-icons delete-icon" fxFlexAlign="center"
+                                    (click)='delete(tableindex)'>
+                                    delete
+                                </span>
+                                <span class="material-icons sync-icon" fxFlexAlign="center"
+                                    (click)="loadOnMap(polygon, tableindex)" *ngIf="!polygon.edit">
+                                    sync
+                                </span>
+                            </div>
+                            <span *ngIf="!polygon.edit" class='coord-values'>{{polygon.coords}}</span>
+                            <span *ngIf="polygon.edit" class='coord-values'>
+                                <mat-form-field appearance="fill" fxFlexFill>
+                                    <textarea matInput fxFlexAlign="center" [(ngModel)]="polygon.coords"></textarea>
+                                    <mat-hint>Formate : lat1,lng1;lat2,lng2</mat-hint>
+                                </mat-form-field>
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div fxLayout="column">
-                <strong>Latituse Longitude Values</strong>
-                <span *ngIf="!tableData.edit" class='coord-values'>{{tableData.coords}}</span>
-                <span *ngIf="tableData.edit" class='coord-values'>
-                    <mat-form-field appearance="fill" fxFlexFill>
-                        <textarea matInput fxFlexAlign="center" [(ngModel)]="tableData.coords"></textarea>
-                        <mat-hint>Formate : lat1,lng1;lat2,lng2</mat-hint>
-                    </mat-form-field>
-                </span>
-            </div>
-        </div>
-        <div *ngIf="isAddFence" fxLayout="column">
-            <div fxLayout="row">
-                <span><strong>Name : </strong>
-                    <mat-form-field appearance="fill">
-                        <input matInput fxFlexAlign="center" [(ngModel)]="newRecord.name">
-                    </mat-form-field>
-                </span>
-            </div>
-            <div fxLayout="column">
-                <strong>Latituse Longitude Values</strong>
-                <span class='coord-values'>
-                    <mat-form-field appearance="fill" fxFlexFill>
-                        <textarea matInput fxFlexAlign="center" [(ngModel)]="newRecord.coords"></textarea>
-                        <mat-hint>Formate : lat1,lng1;lat2,lng2</mat-hint>
-                    </mat-form-field>
-                </span>
-            </div>
-            <button [disabled]="!((newRecord.name.length !== 0) && (newRecord.coords.length !== 0))" mat-raised-button color="primary"
-                (click)="addNewFence()">
-                ADD</button>
-        </div>
+        </mat-step>
 
-        <!-- <div fxLayout="row" fxFlexFill class="row-data" fxFlexAlign="start" fxLayoutGap="5px">
-            <div fxLayout="column" fxFlex="15" fxFlex.lt-md="30" fxFlexAlign="center" fxLayoutAlign="center">
-                {{tableData.name}}
+        <mat-step>
+            <ng-template matStepLabel>Feed new data</ng-template>
+            <div fxLayout="row">
+                <mat-button-toggle-group [value]="stepperValue" (change)="stepperChanged($event)" name="fontStyle" aria-label="Font Style">
+                    <mat-button-toggle value="1">Enter coords manually</mat-button-toggle>
+                    <mat-button-toggle value="2">Draw coords on map</mat-button-toggle>
+                  </mat-button-toggle-group>
             </div>
-            <div fxLayout="column" fxFlex="40" fxFlex.lt-md="60" class="row-value" fxLayoutAlign="center">
-                
+           
+            <div fxLayout="column" *ngIf="!isDrawOnMap" >
+                <div fxLayout="row" fxFlexOffset="10px">
+                    <div fxLayout="row wrap" fxLayoutGap="5px">
+                        <mat-form-field appearance="fill" class="select-field">
+                            <mat-label>Select Fence</mat-label>
+                            <mat-select (selectionChange)="fenceChangedForAdd($event)">
+                                <mat-option *ngFor="let fence of fenceData" [value]="fence">
+                                    {{fence}}</mat-option>
+                                    <mat-option  value="Add">
+                                        Add new fence</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div fxLayout="column">
+                    <mat-form-field appearance="fill" *ngIf="showAddInput" class="select-field">
+                        <input matInput placeholder="Add new fence" [(ngModel)]="newRecord.name">
+                    </mat-form-field>
+                    <strong>Latituse Longitude Values</strong>
+                    <span class='coord-values'>
+                        <mat-form-field appearance="fill" fxFlexFill>
+                            <textarea matInput fxFlexAlign="center" [(ngModel)]="newRecord.coords"></textarea>
+                            <mat-hint>Formate : lat1,lng1;lat2,lng2</mat-hint>
+                        </mat-form-field>
+                    </span>
+                </div>
+                <button [disabled]="!((newRecord.name.length !== 0) && (newRecord.coords.length !== 0))"
+                    mat-raised-button color="primary" (click)="addNewFence()">
+                    ADD</button>
             </div>
-             <div fxLayout="row"  fxFlexAlign="center" fxLayoutAlign="center">
-                <span class="material-icons edit-icon" *ngIf="!data.edit" (click)="data.edit = !data.edit">
-                    create
-                </span>
-                <span class="material-icons sync-icon" *ngIf="data.edit" (click)="data.edit = !data.edit">
-                    check
-                </span>
-                <span class="material-icons delete-icon">
-                    delete
-                </span>
-                <span class="material-icons sync-icon" *ngIf="!data.edit">
-                    sync
-                </span>
-            </div> 
-        </div> -->
-    </mat-card>
+        </mat-step>
+    </mat-horizontal-stepper>
 
 </mat-expansion-panel>

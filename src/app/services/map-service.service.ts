@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { BehaviorSubject } from 'rxjs';
 
 
 @Injectable({
@@ -9,6 +10,25 @@ import { environment } from 'src/environments/environment';
 export class MapServiceService {
 
   constructor(private http: HttpClient) { }
+
+  public currentFencePolygonList = new BehaviorSubject([]);
+  private currentFence = '';
+
+  setCurrentFenceList(fenceList) {
+    this.currentFencePolygonList.next(fenceList);
+  }
+
+  getCurrentFenceList() {
+    return this.currentFencePolygonList.value;
+  }
+
+  setCurrentFence(fence) {
+    this.currentFence = fence;
+  }
+
+  getCurrentFence() {
+    return this.currentFence;
+  }
 
   getFenceDataByName(name){
       return this.http.get<any>(environment.serverUrl + 'geoCords/' + name);

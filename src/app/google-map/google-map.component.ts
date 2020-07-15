@@ -1,6 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { isPointInPolygon } from 'geolib';
+import { DrawingManager } from '@ngui/map';
+import { MapConfig, positions } from './google-map-config';
+import { MatDialog } from '@angular/material/dialog';
+import { AddCoordsComponent } from './add-coords/add-coords.component';
 import { MapServiceService } from '../services/map-service.service';
+import { async } from '@angular/core/testing';
+import { NotificationService } from '../services/notification.service';
 
 @Component({
   selector: 'app-google-map',
@@ -9,108 +15,135 @@ import { MapServiceService } from '../services/map-service.service';
 })
 export class GoogleMapComponent implements OnInit {
 
-  constructor(private mapServiceService: MapServiceService) { }
+  constructor(public dialog: MatDialog, private mapServiceService: MapServiceService,
+    private notificationService: NotificationService) { }
 
-  polys = [
-    JSON.stringify({ 'name': 1, 'coords': [{ latlang: '12.954615167713982,77.63853529426154' }, { latlang: '12.954442647529259,77.63924071523246' }, { latlang: '12.95424660171983,77.63919779988822' }, { latlang: '12.954419122040278,77.63849640223083' },] }),
-    JSON.stringify({ 'name': 2, 'coords': [{ latlang: '12.95441650809697,77.63849477130759' }, { latlang: '12.954330247950807,77.63881395418036' }, { latlang: '12.954027030230158,77.63874421674598' }, { latlang: '12.954104141668257,77.63842235166419' },] }),
-  ];
-  tableData = [];
+  selectedOverlay: any;
+  @ViewChild(DrawingManager) drawingManager: DrawingManager;  
+  fenceData = ['fence1', 'fence2'];
+  mapCenter = MapConfig.Map_Center;
+  drawOptions = {
+    position: 2,
+    drawingModes: MapConfig.Drawing_Manager.Modes,
+  };
+  polygonOptions = MapConfig.Drawing_Manager.polygonOptions;
 
-  fenceData = ['fence1', 'fence2', 'Add new fence'];
-
-  latlng1; latlng2; latlng3; latlng4;
-  mapCenter = '12.954154945908408, 77.64081755987168';
-
-  area1Coords = [
-    { lat: 12.954615167713982, lng: 77.63853529426154 },
-    { lat: 12.954442647529259, lng: 77.63924071523246 },
-    { lat: 12.95424660171983, lng: 77.63919779988822 },
-    { lat: 12.954419122040278, lng: 77.63849640223083 },
-  ];
-
-  area2Coords = [
-    { lat: 12.95441650809697, lng: 77.63849477130759 },
-    { lat: 12.954330247950807, lng: 77.63881395418036 },
-    { lat: 12.954027030230158, lng: 77.63874421674598 },
-    { lat: 12.954104141668257, lng: 77.63842235166419 },
-  ];
-
-  area3Coords = [
-    { lat: 12.954332861895066, lng: 77.63882736522544 },
-    { lat: 12.95401657444008, lng: 77.63875494558204 },
-    { lat: 12.953952532716421, lng: 77.63909424502242 },
-    { lat: 12.954257057500277, lng: 77.6391626413523 },
-  ];
-  area4Coords = [
-    { lat: 12.954100220748229, lng: 77.63841162282813 },
-    { lat: 12.953951225742294, lng: 77.63906876403678 },
-    { lat: 12.95377347719768, lng: 77.63902584869254 },
-    { lat: 12.953915937438358, lng: 77.63837675411094 },
-  ];
   coords = [];
-  positions = [
-    [12.954036238178764, 77.6394912253171],
-    [12.954051921862435, 77.63929810626803],
-    [12.954041466073427, 77.63917472465334]
-  ]
-  i = -0;
-  position: any = this.positions[this.i];
-  options = {
-    position: this.position,
-  }
+  positions = positions;
+  positionIndex = -0;
+  position: any = this.positions[this.positionIndex];
   private map: google.maps.Map;
-  ngOnInit(): void {
-    this.mapServiceService.getAllFenceDataName().subscribe((res : any) => {
-     this.fenceData = res; 
-     this.fenceData.push('Add new fence'); 
-    },err => {
-      console.log("Error Response",err);
-    });
+  boundary = [];
+  dialogData:any;
+  showDialog = false;
+  enableDrawing = false;
 
-    //this.convertToTableViewFormate(this.polys);
-    console.log('check', isPointInPolygon({ lat: 12.954323775550376, lng: 77.63915473532667 }, this.area4Coords));
-    setInterval(() =>
-      this.setPosition(), 5000
-    );
+  ngOnInit(): void {
+    this.mapServiceService.getAllFenceDataName().subscribe((res: any) => {
+      this.fenceData = res;
+    }, err => {
+      console.log("Error Response", err);
+      this.notificationService.openSnackBar('error', 1);
+    });    
   }
 
-  onMapReady(map){
+  deleteSelectedOverlay() {
+    if (this.selectedOverlay) {
+      this.selectedOverlay.setMap(null);
+      delete this.selectedOverlay;
+    }
+  }
+
+  triggerDrawing(isDrawEnabled) {
+    this.enableDrawing = isDrawEnabled;
+  }
+
+  onMapReady(map) {
     this.map = map;
     console.log('map', map)
+
+    this.drawingManager['initialized$'].subscribe(dm => {
+      google.maps.event.addListener(dm, 'overlaycomplete',  event => {
+        if (event.type !== google.maps.drawing.OverlayType.MARKER) {
+          dm.setDrawingMode(null);
+          google.maps.event.addListener(event.overlay, 'click', e => {
+            this.selectedOverlay = event.overlay;
+            this.selectedOverlay.setEditable(true);
+          });
+          this.selectedOverlay = event.overlay;
+          this.selectedOverlay.setEditable(true);
+           this.alertData(event.overlay.getPath().getArray())
+        }
+      });
+    });
+  }
+
+  alertData(data) {
+    let text = '';
+    data.forEach(item => {
+      text += item.lat() + ',' + item.lng() + ';';
+    });
+    this.dialogData = {
+      text: text,
+      fenceData: this.fenceData
+    }
+    this.showDialog = true;    
   }
 
   setPosition() {
-    this.i++;
-    if (this.i <= this.positions.length - 1) {
-      var pos = this.positions[this.i];
+    this.positionIndex++;
+    if (this.positionIndex <= this.positions.length - 1) {
+      var pos = this.positions[this.positionIndex];
       this.position = { 'lat': pos[0], 'lng': pos[1] };
-      console.log('done', this.position);
-
+      console.log('position', this.position);
+      console.log('Inside', isPointInPolygon(this.position, this.boundary));
     }
+
+    
   }
 
-  selectedFenceData(data) {
+  loadDataOnMap(data) {
     console.log(data);
-    let convertedData = this.convertToMapPolygons(data.coords);
-    // {name: "1", coords: "12.954615167713982,77.63853529426154;12.9544426475…02584869254;12.953915937438358,77.63837675411094;"}
-    this.coords.push(convertedData);
+    let convertedData = this.convertToMapPolygons(data.coords);  
+    this.coords.push({name: data.name, polygonCoords: convertedData});
+    setInterval(() =>
+      this.setPosition(), 1000
+    );
+  }
+
+  deleteFenceData(index) {
+    console.log(this.coords, index);
+    this.coords = this.coords.splice((this.coords.findIndex(c => c.name == index), 1));
   }
 
   convertToMapPolygons(latLngValues) {
-    if(latLngValues[latLngValues.length-1] == ';'){
-      latLngValues = latLngValues.substring(0, latLngValues.length -1);
+    if (latLngValues[latLngValues.length - 1] == ';') {
+      latLngValues = latLngValues.substring(0, latLngValues.length - 1);
     }
     let eachValue = latLngValues.split(';');
     this.mapCenter = eachValue[0].split(',');
-    this.map.setCenter({lat:parseFloat(this.mapCenter[0]),lng:parseFloat(this.mapCenter[1])});    
-    let data= eachValue.map(value => {
+    this.map.setCenter({ lat: parseFloat(this.mapCenter[0]), lng: parseFloat(this.mapCenter[1]) });
+    let data = eachValue.map(value => {
       value = value.split(',');
-      let modifiedValue = {lat:parseFloat(value[0]), lng: parseFloat(value[1])};
+      let modifiedValue = { lat: parseFloat(value[0]), lng: parseFloat(value[1]) };
       value = modifiedValue;
       return value;
-    });   
+    });
+    this.boundary = data;
     return data;
+  }
+
+  closeDialog(result) {
+
+    if (result != null && result != 'clear') {
+      if (this.fenceData.indexOf(result) == -1) {
+        this.fenceData.splice(0, 0, result);
+      }
+    }
+    if(this.selectedOverlay != undefined) {
+      this.deleteSelectedOverlay(); 
+    }
+    this.showDialog = false;
   }
 
 }

@@ -20,6 +20,12 @@ import { NguiMapModule} from '@ngui/map';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FenceListComponent } from './fence-list/fence-list.component';
 import { HttpClientModule } from '@angular/common/http';
+import { AddCoordsComponent } from './google-map/add-coords/add-coords.component';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatStepperModule} from '@angular/material/stepper';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -27,7 +33,7 @@ import { HttpClientModule } from '@angular/common/http';
     HomeComponent,
     LoginComponent,
     GoogleMapComponent,  
-    FenceListComponent,
+    FenceListComponent, AddCoordsComponent,
   ],
   imports: [
     BrowserModule,
@@ -42,11 +48,17 @@ import { HttpClientModule } from '@angular/common/http';
     MatIconModule,
     MatButtonModule,
     MatExpansionModule,
+    MatDialogModule,
     MatSelectModule,
+    MatToolbarModule,
     HttpClientModule,
+    MatStepperModule,
+    MatButtonToggleModule,
+    MatSnackBarModule,
     NguiMapModule.forRoot({apiUrl: 'https://maps.google.com/maps/api/js?libraries=visualization,places,drawing'})
   ],
   providers: [PouchDBService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: []
 })
 export class AppModule { }
