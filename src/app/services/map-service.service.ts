@@ -45,11 +45,11 @@ export class MapServiceService {
 
 
   updateFenceData(geofenceData,id) {
-    return this.http.put(environment.serverUrl + 'geoCords/'+id, geofenceData,id);
+    return this.http.put(environment.serverUrl + 'geoCords/'+id, {"coords":geofenceData});
   }
 
-  deleteFenceData(geofenceData,id) {
-    return this.http.put(environment.serverUrl + 'geoCords/'+id, geofenceData,id);
+  deleteFenceData(id) {
+    return this.http.delete(environment.serverUrl + 'geoCords/'+id);
   }
 
 

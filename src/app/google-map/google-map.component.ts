@@ -7,6 +7,7 @@ import { AddCoordsComponent } from './add-coords/add-coords.component';
 import { MapServiceService } from '../services/map-service.service';
 import { async } from '@angular/core/testing';
 import { NotificationService } from '../services/notification.service';
+import { LoaderService } from '../services/loader.service';
 
 @Component({
   selector: 'app-google-map',
@@ -16,7 +17,7 @@ import { NotificationService } from '../services/notification.service';
 export class GoogleMapComponent implements OnInit {
 
   constructor(public dialog: MatDialog, private mapServiceService: MapServiceService,
-    private notificationService: NotificationService) { }
+    private notificationService: NotificationService, private loaderService: LoaderService) { }
 
   selectedOverlay: any;
   @ViewChild(DrawingManager) drawingManager: DrawingManager;  
@@ -37,14 +38,17 @@ export class GoogleMapComponent implements OnInit {
   dialogData:any;
   showDialog = false;
   enableDrawing = false;
+  loading=false;
 
   ngOnInit(): void {
     this.mapServiceService.getAllFenceDataName().subscribe((res: any) => {
       this.fenceData = res;
     }, err => {
       console.log("Error Response", err);
-      this.notificationService.openSnackBar('error', 1);
-    });    
+    }); 
+    this.loaderService.loaderState.subscribe((res: any) => {
+      this.loading=res;
+    });
   }
 
   deleteSelectedOverlay() {
@@ -56,12 +60,19 @@ export class GoogleMapComponent implements OnInit {
 
   triggerDrawing(isDrawEnabled) {
     this.enableDrawing = isDrawEnabled;
+    if(this.enableDrawing) {
+      (document.getElementsByClassName("gmnoprint")[2] as HTMLElement ).style.visibility="visible";
+    }
   }
 
   onMapReady(map) {
     this.map = map;
-    console.log('map', map)
+    console.log('map', map);
+    this.initializeDrawingManager();
+    (document.getElementsByClassName("gmnoprint")[2] as HTMLElement ).style.visibility="hidden";
+  }
 
+  initializeDrawingManager() {
     this.drawingManager['initialized$'].subscribe(dm => {
       google.maps.event.addListener(dm, 'overlaycomplete',  event => {
         if (event.type !== google.maps.drawing.OverlayType.MARKER) {
@@ -90,15 +101,17 @@ export class GoogleMapComponent implements OnInit {
     this.showDialog = true;    
   }
 
-  setPosition() {
+  setPosition(name) {
     this.positionIndex++;
     if (this.positionIndex <= this.positions.length - 1) {
       var pos = this.positions[this.positionIndex];
       this.position = { 'lat': pos[0], 'lng': pos[1] };
       console.log('position', this.position);
       console.log('Inside', isPointInPolygon(this.position, this.boundary));
+      if(isPointInPolygon(this.position, this.boundary)){
+       this.notificationService.openSnackBar("Entered inside "+ name,1);
+      }
     }
-
     
   }
 
@@ -107,7 +120,7 @@ export class GoogleMapComponent implements OnInit {
     let convertedData = this.convertToMapPolygons(data.coords);  
     this.coords.push({name: data.name, polygonCoords: convertedData});
     setInterval(() =>
-      this.setPosition(), 1000
+      this.setPosition(data.placeName), 1000
     );
   }
 
@@ -136,8 +149,8 @@ export class GoogleMapComponent implements OnInit {
   closeDialog(result) {
 
     if (result != null && result != 'clear') {
-      if (this.fenceData.indexOf(result) == -1) {
-        this.fenceData.splice(0, 0, result);
+      if (this.fenceData.indexOf(result.name) == -1) {
+        this.fenceData.splice(0, 0, result.name);
       }
     }
     if(this.selectedOverlay != undefined) {

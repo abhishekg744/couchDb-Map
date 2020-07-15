@@ -26,6 +26,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatStepperModule} from '@angular/material/stepper';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; 
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     HttpClientModule,
     MatStepperModule,
     MatButtonToggleModule,
+    MatProgressSpinnerModule,
     MatSnackBarModule,
     NguiMapModule.forRoot({apiUrl: 'https://maps.google.com/maps/api/js?libraries=visualization,places,drawing'})
   ],

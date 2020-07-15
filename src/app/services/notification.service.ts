@@ -16,7 +16,7 @@ export class NotificationService {
   snackBarRef: MatSnackBarRef<any>;
   horizontalPosition: MatSnackBarHorizontalPosition = 'center';
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
-  snackBarAutoHide = '150000';
+  snackBarAutoHide = '1500';
 
   constructor(private snackBar: MatSnackBar) { }
 

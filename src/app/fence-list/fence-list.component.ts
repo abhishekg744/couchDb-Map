@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MapServiceService } from '../services/map-service.service';
+import { NotificationService } from '../services/notification.service';
+import { LoaderService } from '../services/loader.service';
 
 @Component({
   selector: 'app-fence-list',
@@ -8,7 +10,7 @@ import { MapServiceService } from '../services/map-service.service';
 })
 export class FenceListComponent implements OnInit {
 
-  constructor(private mapServiceService: MapServiceService) { }
+  constructor(private mapServiceService: MapServiceService, private notificationService: NotificationService,private loaderService: LoaderService) { }
   @Input() fenceData;
   @Output() loadDataOnMap = new EventEmitter();
   @Output() deleteFenceData = new EventEmitter();
@@ -56,26 +58,35 @@ export class FenceListComponent implements OnInit {
       this.selectedFence = event.source.value;
       // get call by name
       this.mapServiceService.getFenceDataByName(this.selectedFence).subscribe(res => {
-        this.polygons = res[0];
+        this.polygons = res;
+        this.mapServiceService.setCurrentFenceList(this.polygons);
       });
+       
 
-      this.mapServiceService.setCurrentFenceList(
-        [{ 'name': '1', 'coords': "12.954612386058743,77.638535;12.954421568269561,77.63922432771683;12.953770695532927,77.63901511541367;12.953922304595407,77.63839552513123;" }]
-      );
+      // this.mapServiceService.setCurrentFenceList(
+      //   [{ 'name': '1', 'coords': "12.954612386058743,77.638535;12.954421568269561,77.63922432771683;12.953770695532927,77.63901511541367;12.953922304595407,77.63839552513123;" }]
+      // );
     }
     this.mapServiceService.setCurrentFence(this.selectedFence);
   }
 
   loadOnMap(polygonData, tableindex) {
+    polygonData.placeName = polygonData.name;
     polygonData.name = tableindex;
     this.loadDataOnMap.emit(polygonData);
   }
 
 
   addNewFence() {
+    this.loaderService.show();
     this.mapServiceService.addFenceData(this.newRecord).subscribe((res: any) => {
       this.fenceData.splice(0, 0, res.name);
+      this.notificationService.openSnackBar('Record added', 1);
       console.log("Record added");
+    },err => {
+      this.notificationService.openSnackBar('Record not added', 0);
+    }).add(() => {
+      this.loaderService.hide();
     });
       let currentFence = this.mapServiceService.getCurrentFence();
       let data:any = null;
@@ -84,6 +95,22 @@ export class FenceListComponent implements OnInit {
         data.push(this.newRecord);
       }
       this.addFenceData.emit(data);
+  }
+
+  update(polygon){
+    this.loaderService.show();
+    polygon.edit = !polygon.edit
+    console.log("Polygon object",JSON.stringify(polygon));
+    this.mapServiceService.updateFenceData(polygon.coords.toString(),polygon.id).subscribe((res: any) => {
+      this.notificationService.openSnackBar('Record updated', 1);
+      console.log("Record updated");
+    },err => {
+      this.notificationService.openSnackBar('Record not updated', 0);
+    }).add(() => {
+      this.loaderService.hide();
+    });
+      
+    // this.mapServiceService.updateFenceData()
   }
 
   delete(tableindex) {

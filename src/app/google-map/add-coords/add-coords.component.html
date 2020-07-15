@@ -1,4 +1,4 @@
-<div fxLayout="column" fxLayoutGap="25px" class="dialog">
+<div fxLayout="column"  fxLayoutGap="25px" class="dialog">
     <mat-toolbar color="primary">
         <div fxLayout="row" fxFlex="100">
             <div fxFlex="80" fxLayoutAlign="center" class="header">Confirm Coords</div>
@@ -13,6 +13,8 @@
             <mat-select (selectionChange)="selectedFenceChanged($event)">
                 <mat-option *ngFor="let fence of data.fenceData" [value]="fence">
                     {{fence}}</mat-option>
+                <mat-option  value="Add">
+                        Add new fence</mat-option>
             </mat-select>
         </mat-form-field>
         <mat-form-field appearance="fill" *ngIf="isAddFence" class="select-field">

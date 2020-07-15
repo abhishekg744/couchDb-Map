@@ -1,5 +1,7 @@
 import { Component, OnInit, Inject, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
 import { MapServiceService } from 'src/app/services/map-service.service';
+import { LoaderService } from 'src/app/services/loader.service';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-add-coords',
@@ -11,7 +13,7 @@ export class AddCoordsComponent implements OnInit {
 
   isAddFence = false;
   newRecord: any = { name: '', coords: '' };
-  constructor(private mapServiceService: MapServiceService,
+  constructor(private mapServiceService: MapServiceService,private loaderService: LoaderService,private notificationService: NotificationService
     ) {
   }
   @Input() data;
@@ -19,12 +21,11 @@ export class AddCoordsComponent implements OnInit {
     
   fenceData = ['fence1', 'fence2'];
   ngOnInit() {
-    this.data.fenceData.push('Add new fence');
     this.newRecord.coords = this.data.text;
   }
 
   selectedFenceChanged(event) {
-    if (event.source.value === 'Add new fence') {
+    if (event.source.value === 'Add') {
       this.newRecord.name = '';
       this.isAddFence = true;
     } else {
@@ -38,19 +39,27 @@ export class AddCoordsComponent implements OnInit {
   }
 
   addNewFence() {
+    this.loaderService.show();
     this.mapServiceService.addFenceData(this.newRecord).subscribe((res: any) => {
       this.fenceData.splice(0, 0, res.name);
+      this.notificationService.openSnackBar('Record added', 1);
       console.log("Record added");
+    },err => {
+      this.notificationService.openSnackBar('Record not added', 0);
+    }).add(() => {
+      this.loaderService.hide();
     });
     let currentFence = this.mapServiceService.getCurrentFence();
     let data:any = null;
     if (currentFence == this.newRecord.name) {
       data = this.mapServiceService.getCurrentFenceList();
       data.push(this.newRecord);
+      this.mapServiceService.setCurrentFenceList(data);
     }
-    this.close(data);
+    this.close(this.newRecord);
   }
 
+  
   close(data = null) {
     this.closeDialog.emit(data);
   }
