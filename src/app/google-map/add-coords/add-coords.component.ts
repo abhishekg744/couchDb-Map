@@ -42,10 +42,10 @@ export class AddCoordsComponent implements OnInit {
     this.loaderService.show();
     this.mapServiceService.addFenceData(this.newRecord).subscribe((res: any) => {
       this.fenceData.splice(0, 0, res.name);
-      this.notificationService.openSnackBar('Record added', 1);
-      console.log("Record added");
+      this.notificationService.openSnackBar('Geofence added', 1);
+      console.log("Geofence added");
     },err => {
-      this.notificationService.openSnackBar('Record not added', 0);
+      this.notificationService.openSnackBar('Geofence not added', 0);
     }).add(() => {
       this.loaderService.hide();
     });

@@ -88,10 +88,10 @@ export class FenceListComponent implements OnInit {
       this.loaderService.show();
       this.mapServiceService.addFenceData(this.newRecord).subscribe((res: any) => {
         this.fenceData.splice(0, 0, res.name);
-        this.notificationService.openSnackBar('Record added', 1);
-        console.log("Record added");
+        this.notificationService.openSnackBar('Geofence added', 1);
+        console.log("Geofence added");
       },err => {
-        this.notificationService.openSnackBar('Record not added', 0);
+        this.notificationService.openSnackBar('Geofence not added', 0);
       }).add(() => {
         this.loaderService.hide();
       });
@@ -113,10 +113,10 @@ export class FenceListComponent implements OnInit {
       polygon.edit = !polygon.edit
       console.log("Polygon object",JSON.stringify(polygon));
       this.mapServiceService.updateFenceData(polygon.coords.toString(),polygon.id).subscribe((res: any) => {
-        this.notificationService.openSnackBar('Record updated', 1);
-        console.log("Record updated");
+        this.notificationService.openSnackBar('Geofence updated', 1);
+        console.log("Geofence updated");
       },err => {
-        this.notificationService.openSnackBar('Record not updated', 0);
+        this.notificationService.openSnackBar('Geofence not updated', 0);
       }).add(() => {
         this.loaderService.hide();
       });
@@ -124,7 +124,17 @@ export class FenceListComponent implements OnInit {
     // this.mapServiceService.updateFenceData()
   }
 
-  delete(tableindex) {
+  delete(tableindex,polygon) {
+    console.log("tableindex is ",tableindex);
+    this.loaderService.show();
+    this.mapServiceService.deleteFenceData(polygon.id).subscribe((res: any) => {
+      this.notificationService.openSnackBar('Geofence deleted',1);
+      console.log("Geofence deleted");
+    },err => {
+      this.notificationService.openSnackBar('Geofence not deleted',0);
+    }).add(() => {
+      this.loaderService.hide();
+    });
     this.polygons.splice(tableindex, 1);
     this.mapServiceService.setCurrentFenceList(this.polygons);
     this.deleteFenceData.emit(tableindex);
