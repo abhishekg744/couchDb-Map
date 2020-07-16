@@ -30,6 +30,21 @@ export class MapServiceService {
     return this.currentFence;
   }
 
+  isLatLngValid(coords) {
+    if (coords != undefined && coords.length > 0) {
+      let length = coords.length;
+      if (coords[length - 1] == ";") {
+        coords = coords.substring(0, (length - 1));
+      }
+      let valuesCount = (coords.split(';')).length;
+      if (valuesCount == (coords.split(',')).length -1) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+  }
+
   getFenceDataByName(name){
       return this.http.get<any>(environment.serverUrl + 'geoCords/' + name);
   }

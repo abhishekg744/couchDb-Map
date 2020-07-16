@@ -23,6 +23,7 @@ export class FenceListComponent implements OnInit {
   isDrawOnMap = false;
   stepperValue = '1';
   showAddInput = false;
+  inputError = false;
 
   ngOnInit(): void {
     this.mapServiceService.currentFencePolygonList.subscribe(data => {
@@ -50,6 +51,10 @@ export class FenceListComponent implements OnInit {
     }
   }
 
+  isLatLngValid(coords) {
+   this.inputError = this.mapServiceService.isLatLngValid(coords);
+  }
+
   selectedFenceChanged(event) {
     this.polygons.edit = false;
     if (event.source.value === 'Add') {
@@ -64,7 +69,7 @@ export class FenceListComponent implements OnInit {
        
 
       // this.mapServiceService.setCurrentFenceList(
-      //   [{ 'name': '1', 'coords': "12.954612386058743,77.638535;12.954421568269561,77.63922432771683;12.953770695532927,77.63901511541367;12.953922304595407,77.63839552513123;" }]
+      //   [{ 'name': '1', 'placeName':'sasken', 'coords': "12.954612386058743,77.638535;12.954421568269561,77.63922432771683;12.953770695532927,77.63901511541367;12.953922304595407,77.63839552513123;" }]
       // );
     }
     this.mapServiceService.setCurrentFence(this.selectedFence);

@@ -39,6 +39,7 @@ export class GoogleMapComponent implements OnInit {
   showDialog = false;
   enableDrawing = false;
   loading=false;
+  positionOcupiedPolygons = [];
 
   ngOnInit(): void {
     this.mapServiceService.getAllFenceDataName().subscribe((res: any) => {
@@ -59,17 +60,13 @@ export class GoogleMapComponent implements OnInit {
   }
 
   triggerDrawing(isDrawEnabled) {
-    this.enableDrawing = isDrawEnabled;
-    if(this.enableDrawing) {
-      (document.getElementsByClassName("gmnoprint")[2] as HTMLElement ).style.visibility="visible";
-    }
+    this.enableDrawing = isDrawEnabled;    
   }
 
   onMapReady(map) {
     this.map = map;
     console.log('map', map);
     this.initializeDrawingManager();
-    (document.getElementsByClassName("gmnoprint")[2] as HTMLElement ).style.visibility="hidden";
   }
 
   initializeDrawingManager() {
@@ -101,27 +98,41 @@ export class GoogleMapComponent implements OnInit {
     this.showDialog = true;    
   }
 
-  setPosition(name) {
+  setPosition() {
     this.positionIndex++;
     if (this.positionIndex <= this.positions.length - 1) {
       var pos = this.positions[this.positionIndex];
       this.position = { 'lat': pos[0], 'lng': pos[1] };
       console.log('position', this.position);
       console.log('Inside', isPointInPolygon(this.position, this.boundary));
-      if(isPointInPolygon(this.position, this.boundary)){
-       this.notificationService.openSnackBar("Entered inside "+ name,1);
-      }
+      this.coords.forEach(polygon => {
+        //let index = this.positionOcupiedPolygons.indexOf(polygon.placeName);
+        if (isPointInPolygon(this.position, this.boundary)) {
+         // this.positionOcupiedPolygons.push(name);
+          if(polygon.entered != true) {
+            this.notificationService.openSnackBar("Entered inside " + polygon.placeName, 1);
+            polygon.entered = true;
+          }
+        } else {         
+          if (polygon.entered == true && polygon.left != true) {
+            polygon.left = true;
+            this.notificationService.openSnackBar("Left" + polygon.placeName, 1);
+          }
+        }
+      });
     }
-    
+  }
+
+  listenToLocation() {
+    setInterval(() =>
+      this.setPosition(), 1000
+    );
   }
 
   loadDataOnMap(data) {
     console.log(data);
     let convertedData = this.convertToMapPolygons(data.coords);  
-    this.coords.push({name: data.name, polygonCoords: convertedData});
-    setInterval(() =>
-      this.setPosition(data.placeName), 1000
-    );
+    this.coords.push({name: data.name, polygonCoords: convertedData, placeName: data.placeName});
   }
 
   deleteFenceData(index) {

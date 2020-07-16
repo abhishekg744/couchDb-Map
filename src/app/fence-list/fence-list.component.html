@@ -1,7 +1,7 @@
 <mat-expansion-panel>
     <mat-expansion-panel-header>
         <mat-panel-title>
-            Geo fence data
+            Geofence Management
         </mat-panel-title>
         <mat-panel-description>
             View/Add fence
@@ -9,11 +9,11 @@
     </mat-expansion-panel-header>
     <mat-horizontal-stepper #stepper>
         <mat-step>
-            <ng-template matStepLabel>Fence List</ng-template>
+            <ng-template matStepLabel>Geofence group</ng-template>
             <div fxLayout="column" class="list-container"  fxFlexOffset="10px">
                 <div fxLayout="row wrap" fxLayoutGap="5px">
                     <mat-form-field appearance="fill" class="select-field">
-                        <mat-label>Select Fence</mat-label>
+                        <mat-label>Select Geofence Group</mat-label>
                         <mat-select (selectionChange)="selectedFenceChanged($event)">
                             <mat-option *ngFor="let fence of fenceData" [value]="fence">
                                 {{fence}}</mat-option>
@@ -24,7 +24,7 @@
                     <div *ngFor="let polygon of polygons; let tableindex = index;">
                         <div fxLayout="column">
                             <div fxLayout="row">
-                                <strong>Latituse Longitude Values</strong>
+                                <strong>Latitude Longitude Values</strong>
                                 <span class="material-icons edit-icon" fxFlexAlign="center" *ngIf="!polygon.edit"
                                     (click)="polygon.edit = !polygon.edit">
                                     create
@@ -45,9 +45,12 @@
                             <span *ngIf="!polygon.edit" class='coord-values'>{{polygon.coords}}</span>
                             <span *ngIf="polygon.edit" class='coord-values'>
                                 <mat-form-field appearance="fill" fxFlexFill>
-                                    <textarea matInput fxFlexAlign="center" [(ngModel)]="polygon.coords"></textarea>
+                                    <textarea matInput fxFlexAlign="center" (change)="isLatLngValid(polygon.coords)" [(ngModel)]="polygon.coords"></textarea>
                                     <mat-hint>Formate : lat1,lng1;lat2,lng2</mat-hint>
                                 </mat-form-field>
+                                <mat-error *ngIf="inputError">
+                                    invalid lat lng values
+                                </mat-error>
                             </span>
                         </div>
                     </div>
@@ -56,7 +59,7 @@
         </mat-step>
 
         <mat-step>
-            <ng-template matStepLabel>Feed new data</ng-template>
+            <ng-template matStepLabel>Create Geofence</ng-template>
             <div fxLayout="row">
                 <mat-button-toggle-group [value]="stepperValue" (change)="stepperChanged($event)" name="fontStyle" aria-label="Font Style">
                     <mat-button-toggle value="1">Enter coords manually</mat-button-toggle>
@@ -85,9 +88,12 @@
                     <strong>Latituse Longitude Values</strong>
                     <span class='coord-values'>
                         <mat-form-field appearance="fill" fxFlexFill>
-                            <textarea matInput fxFlexAlign="center" [(ngModel)]="newRecord.coords"></textarea>
+                            <textarea matInput fxFlexAlign="center" (change)="isLatLngValid(newRecord.coords)" [(ngModel)]="newRecord.coords"></textarea>
                             <mat-hint>Formate : lat1,lng1;lat2,lng2</mat-hint>
                         </mat-form-field>
+                        <mat-error *ngIf="inputError">
+                            invalid lat lng values
+                        </mat-error>
                     </span>
                 </div>
                 <button [disabled]="!((newRecord.name.length !== 0) && (newRecord.coords.length !== 0))"
