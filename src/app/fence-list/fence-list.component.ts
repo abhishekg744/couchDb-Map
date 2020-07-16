@@ -83,38 +83,44 @@ export class FenceListComponent implements OnInit {
 
 
   addNewFence() {
-    this.loaderService.show();
-    this.mapServiceService.addFenceData(this.newRecord).subscribe((res: any) => {
-      this.fenceData.splice(0, 0, res.name);
-      this.notificationService.openSnackBar('Record added', 1);
-      console.log("Record added");
-    },err => {
-      this.notificationService.openSnackBar('Record not added', 0);
-    }).add(() => {
-      this.loaderService.hide();
-    });
-      let currentFence = this.mapServiceService.getCurrentFence();
-      let data:any = null;
-      if (currentFence == this.newRecord.name) {
-        data = this.mapServiceService.getCurrentFenceList();
-        data.push(this.newRecord);
-      }
-      this.addFenceData.emit(data);
+    this.inputError= this.mapServiceService.isLatLngValid(this.newRecord.coords);
+    if(!this.inputError) {
+      this.loaderService.show();
+      this.mapServiceService.addFenceData(this.newRecord).subscribe((res: any) => {
+        this.fenceData.splice(0, 0, res.name);
+        this.notificationService.openSnackBar('Record added', 1);
+        console.log("Record added");
+      },err => {
+        this.notificationService.openSnackBar('Record not added', 0);
+      }).add(() => {
+        this.loaderService.hide();
+      });
+        let currentFence = this.mapServiceService.getCurrentFence();
+        let data:any = null;
+        if (currentFence == this.newRecord.name) {
+          data = this.mapServiceService.getCurrentFenceList();
+          data.push(this.newRecord);
+        }
+        this.addFenceData.emit(data);
+    }
+    
   }
 
   update(polygon){
-    this.loaderService.show();
-    polygon.edit = !polygon.edit
-    console.log("Polygon object",JSON.stringify(polygon));
-    this.mapServiceService.updateFenceData(polygon.coords.toString(),polygon.id).subscribe((res: any) => {
-      this.notificationService.openSnackBar('Record updated', 1);
-      console.log("Record updated");
-    },err => {
-      this.notificationService.openSnackBar('Record not updated', 0);
-    }).add(() => {
-      this.loaderService.hide();
-    });
-      
+    this.inputError= this.mapServiceService.isLatLngValid(polygon.coords.toString());
+    if(!this.inputError){
+      this.loaderService.show();
+      polygon.edit = !polygon.edit
+      console.log("Polygon object",JSON.stringify(polygon));
+      this.mapServiceService.updateFenceData(polygon.coords.toString(),polygon.id).subscribe((res: any) => {
+        this.notificationService.openSnackBar('Record updated', 1);
+        console.log("Record updated");
+      },err => {
+        this.notificationService.openSnackBar('Record not updated', 0);
+      }).add(() => {
+        this.loaderService.hide();
+      });
+    }    
     // this.mapServiceService.updateFenceData()
   }
 

@@ -4,7 +4,7 @@
             Geofence Management
         </mat-panel-title>
         <mat-panel-description>
-            View/Add fence
+            View/Add Geofence
         </mat-panel-description>
     </mat-expansion-panel-header>
     <mat-horizontal-stepper #stepper>
@@ -71,7 +71,7 @@
                 <div fxLayout="row" fxFlexOffset="10px">
                     <div fxLayout="row wrap" fxLayoutGap="5px">
                         <mat-form-field appearance="fill" class="select-field">
-                            <mat-label>Select Fence</mat-label>
+                            <mat-label>Select Geofence</mat-label>
                             <mat-select (selectionChange)="fenceChangedForAdd($event)">
                                 <mat-option *ngFor="let fence of fenceData" [value]="fence">
                                     {{fence}}</mat-option>
@@ -85,7 +85,7 @@
                     <mat-form-field appearance="fill" *ngIf="showAddInput" class="select-field">
                         <input matInput placeholder="Add new fence" [(ngModel)]="newRecord.name">
                     </mat-form-field>
-                    <strong>Latituse Longitude Values</strong>
+                    <strong>Latitude Longitude Values</strong>
                     <span class='coord-values'>
                         <mat-form-field appearance="fill" fxFlexFill>
                             <textarea matInput fxFlexAlign="center" (change)="isLatLngValid(newRecord.coords)" [(ngModel)]="newRecord.coords"></textarea>

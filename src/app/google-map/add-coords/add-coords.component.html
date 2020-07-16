@@ -9,7 +9,7 @@
     </mat-toolbar>
     <div fxLayout="column" fxLayoutGap="10px" class="dialog-container">
         <mat-form-field appearance="fill" class="select-field">
-            <mat-label>Select Fence</mat-label>
+            <mat-label>Select Geofence</mat-label>
             <mat-select (selectionChange)="selectedFenceChanged($event)">
                 <mat-option *ngFor="let fence of data.fenceData" [value]="fence">
                     {{fence}}</mat-option>

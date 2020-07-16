@@ -31,8 +31,8 @@ export class GoogleMapComponent implements OnInit {
 
   coords = [];
   positions = positions;
-  positionIndex = -0;
-  position: any = this.positions[this.positionIndex];
+  positionIndex = 0;
+  position: any ;
   private map: google.maps.Map;
   boundary = [];
   dialogData:any;
@@ -40,6 +40,7 @@ export class GoogleMapComponent implements OnInit {
   enableDrawing = false;
   loading=false;
   positionOcupiedPolygons = [];
+  intervalObject  ;
 
   ngOnInit(): void {
     this.mapServiceService.getAllFenceDataName().subscribe((res: any) => {
@@ -104,27 +105,33 @@ export class GoogleMapComponent implements OnInit {
       var pos = this.positions[this.positionIndex];
       this.position = { 'lat': pos[0], 'lng': pos[1] };
       console.log('position', this.position);
-      console.log('Inside', isPointInPolygon(this.position, this.boundary));
       this.coords.forEach(polygon => {
+        console.log('Inside '+ polygon.placeName,isPointInPolygon(this.position,polygon.polygonCoords));
         //let index = this.positionOcupiedPolygons.indexOf(polygon.placeName);
-        if (isPointInPolygon(this.position, this.boundary)) {
+        if (isPointInPolygon(this.position, polygon.polygonCoords)) {
          // this.positionOcupiedPolygons.push(name);
           if(polygon.entered != true) {
             this.notificationService.openSnackBar("Entered inside " + polygon.placeName, 1);
             polygon.entered = true;
+            polygon.left = false;
           }
         } else {         
           if (polygon.entered == true && polygon.left != true) {
             polygon.left = true;
-            this.notificationService.openSnackBar("Left" + polygon.placeName, 1);
+            polygon.entered = false;
+            this.notificationService.openSnackBar("Left " + polygon.placeName, 1);
           }
         }
       });
     }
+    else{
+      clearInterval(this.intervalObject);
+      this.positionIndex = 0;
+    }
   }
 
   listenToLocation() {
-    setInterval(() =>
+   this.intervalObject = setInterval(() =>
       this.setPosition(), 1000
     );
   }
